@@ -127,6 +127,6 @@ eval $cmd
 
 # this assumes your EOS space on the LPC has the same name as your local username (or your DN is mapped to it)
 # if not, change below line to actual EOS space name
-xrdcp ${namebase}_AOD_2018.root root://cmsxrootd.fnal.gov//store/user/$USERNAME/TrueMuonium/AOD_Signal_Samples/
+xrdcp ${namebase}_AOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/TrueMuonium/AOD_Signal_Samples/
 
 echo "Done!"
