@@ -5,12 +5,12 @@
 ##
 ## Currently MINIAOD production is commented out to save time (and we don't use it).
 
-## Usage: ./generateEvents.sh
+## Usage: ./generateEvents.sh [your-eos-lpc-username]
 
 USERNAME=$1
 export BASEDIR=`pwd`
 
-echo "Starting script for user $USERNAME."
+echo "Starting script for user: $USERNAME ..."
 echo "Will save generated AODs at: /store/user/$USERNAME/TrueMuonium/AOD_Signal_Samples/"
 
 nevent=1000
@@ -75,6 +75,7 @@ echo "2.) Generating DIGI-RAW-HLT for True Muonium"
 sed -i "s/file:placeholder_in.root/file:${namebase}_GENSIM.root/g" TM_DIGIRAWHLT_template_2018_cfg.py
 sed -i "s/file:placeholder_out.root/file:${namebase}_DIGIRAWHLT.root/g" TM_DIGIRAWHLT_template_2018_cfg.py
 sed -i "s/input = cms.untracked.int32(10)/input = cms.untracked.int32(${nevent})/g" TM_DIGIRAWHLT_template_2018_cfg.py
+
 mv TM_DIGIRAWHLT_template_2018_cfg.py TM_DIGIRAWHLT_cfg.py
 
 #echo "2.) Generating DIGI-RAW-HLT for True Muonium"
@@ -109,16 +110,16 @@ cmsDriver.py step2 \
 
 cmsRun -p TM_AOD_cfg.py
 
-    # MINIAOD production is commented out
-    #echo "4.) Generating MINIAOD"
-    #cmsDriver.py step3 \
-        #    --filein file:${namebase}_AOD.root \
-        #    --fileout file:${namebase}_MINIAOD.root \
-        #    --mc --eventcontent MINIAODSIM --datatier MINIAODSIM --runUnscheduled \
-        #    --conditions auto:phase1_2018_realistic --step PAT \
-        #    --nThreads 8 --era Run2_2018 --python_filename ${namebase}_MINIAOD_cfg.py --no_exec \
-        #    --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
-    #cmsRun -p ${namebase}_MINIAOD_cfg.py
+# MINIAOD production is commented out
+#echo "4.) Generating MINIAOD"
+#cmsDriver.py step3 \
+    #    --filein file:${namebase}_AOD.root \
+    #    --fileout file:${namebase}_MINIAOD.root \
+    #    --mc --eventcontent MINIAODSIM --datatier MINIAODSIM --runUnscheduled \
+    #    --conditions auto:phase1_2018_realistic --step PAT \
+    #    --nThreads 8 --era Run2_2018 --python_filename ${namebase}_MINIAOD_cfg.py --no_exec \
+    #    --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
+#cmsRun -p ${namebase}_MINIAOD_cfg.py
 
 pwd
 cmd="ls -arlth *.root"
