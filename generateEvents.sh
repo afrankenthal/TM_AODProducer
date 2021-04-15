@@ -54,6 +54,7 @@ cmsDriver.py TrueMuonium_DisplacedGun_pythia8_cfi.py \
 
 # Make each file unique to make later publication possible
 # (by making lumi section equal to the random seed)
+# Also add random seed to Random Number Generator Service
 linenumber=`grep -n 'process.source' TM_GENSIM_cfg.py | awk '{print $1}'`
 linenumber=${linenumber%:*}
 total_linenumber=`cat TM_GENSIM_cfg.py | wc -l`
@@ -62,6 +63,7 @@ tail -n $bottom_linenumber TM_GENSIM_cfg.py > tail.py
 head -n $linenumber TM_GENSIM_cfg.py > head.py
 echo "process.source.firstRun = cms.untracked.uint32(1)" >> head.py
 echo "process.source.firstLuminosityBlock = cms.untracked.uint32($RANDOMSEED)" >> head.py
+echo "process.RandomNumberGeneratorService.generator.initialSeed = $RANDOMSEED" >> head.py
 cat tail.py >> head.py
 mv head.py TM_GENSIM_cfg.py
 rm -rf tail.py
