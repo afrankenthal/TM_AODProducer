@@ -7,4 +7,4 @@ Output = $(Cluster)_$(Process).out
 Error = $(Cluster)_$(Process).err
 Log = $(Cluster)_$(Process).log
 Arguments = $ENV(USER)
-Queue 10
+Queue 25
