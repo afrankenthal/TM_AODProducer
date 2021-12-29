@@ -1,0 +1,10 @@
+universe = vanilla
+Executable = generateEvents_EtaTo2Mu.sh
+should_transfer_files = YES
+transfer_input_files = EtaTo2Mu_DIGIRAWHLT_template_2018_cfg.py
+request_memory = 4000
+Output = $(Cluster)_$(Process).out
+Error = $(Cluster)_$(Process).err
+Log = $(Cluster)_$(Process).log
+Arguments = $ENV(USER)
+Queue 65
