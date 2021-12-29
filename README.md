@@ -25,12 +25,12 @@ Also make sure that the path `TrueMuonium/AOD_Signal_Samples` exists before runn
 
 ## Merging output files
 
-The output AOD files are in CMS's Event Data Model (EDM) format, which prevents them from being hadd-ed together. Instead, use the `merge.py` CMS config provided here to merge all output files. Commands:
+The output AOD files are in CMS's Event Data Model (EDM) format, which prevents them from being hadd-ed together. Instead, use the `mergeAODs.py` CMS config provided here to merge all output files. Commands:
 
 ```bash
 $ xrdfsls -u /store/user/[user]/TrueMuonium/AOD_Signal_Samples | grep .root > filelist.txt
 $ mkdir -p /uscmst1b_scratch/lpc1/3DayLifetime/[user]
-$ cmsRun merge.py outputFile=/uscmst1b_scratch/lpc1/3DayLifetime/[user]/merged.root inputFiles_load=filelist.txt
+$ cmsRun mergeAODs.py outputFile=/uscmst1b_scratch/lpc1/3DayLifetime/[user]/merged.root inputFiles_load=filelist.txt
 ```
 
-This creates a file named `merged.root` in the LPC's scratch space, so that it can be transferred to a permanent location (the merged file can be quite large so it might not fit in your personal space).
+This creates a file named `merged.root` in the LPC's scratch space, so that it can be transferred to a permanent location (the merged file can be quite large so it might not fit in your personal LPC folder).
