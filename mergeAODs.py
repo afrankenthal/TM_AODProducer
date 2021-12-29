@@ -7,6 +7,11 @@ options.parseArguments()
 
 process = cms.Process("PickEvent")
 
+process.options = cms.untracked.PSet(
+  numberOfThreads = cms.untracked.uint32(8),
+  numberOfStreams = cms.untracked.uint32(8)
+)
+
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.FwkReport.reportEvery = options.loginterval
 
