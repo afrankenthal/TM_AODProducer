@@ -1,0 +1,11 @@
+universe = vanilla
+Executable = run_EtaToMuMu_2022MiniAOD.sh
+should_transfer_files = YES
+transfer_input_files = EtaToMuMu_2022Test_DIGIRAWHLT_cfg.py
+request_memory = 4000
+Output = EtaMuMu$(Cluster)_$(Process).out
+Error = EtaMuMu$(Cluster)_$(Process).err
+Log = EtaMuMu$(Cluster)_$(Process).log
+Arguments = $ENV(USER) $(Process)
+Queue 50
+#Queue 1

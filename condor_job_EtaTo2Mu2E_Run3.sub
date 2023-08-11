@@ -1,10 +1,17 @@
 universe = vanilla
-Executable = generateEvents_EtaTo2Mu2E_Run3.sh
+#Executable = generateEvents_EtaTo2Mu2E_Run3.sh
+#Executable = generateEvents_EtaTo2Mu2E_Run3_GSDR.sh
+#Executable = convertEvents_EtaTo2Mu2E_Run3.sh
+Executable = generateEvents_EtaTo2Mu2E_2022.sh
 should_transfer_files = YES
-transfer_input_files = EtaTo2Mu2E_DIGIRAWHLT_template_2021_cfg.py, scoutingPF_2021.py
+#transfer_input_files = EtaTo2Mu2E_DIGIRAWHLT_template_2021_cfg.py, scoutingPF_2021.py
+#transfer_input_files = EtaTo2Mu2E_DIGIRAWHLT_template_2021_cfg.py
+transfer_input_files = EtaTo2Mu2E_2022Test_DIGIRAWHLT_cfg.py
 request_memory = 4000
 Output = $(Cluster)_$(Process).out
 Error = $(Cluster)_$(Process).err
 Log = $(Cluster)_$(Process).log
-Arguments = $ENV(USER)
-Queue 65
+Arguments = $ENV(USER) $(Process)
+#Queue 65
+Queue 34
+#Queue 1
