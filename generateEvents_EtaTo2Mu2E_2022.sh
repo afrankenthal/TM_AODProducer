@@ -13,8 +13,8 @@
 #}
 
 #1000 for real thing
-nevent=1000
-#20 for test!
+nevent=2000
+##20 for test!
 #nevent=20
 USERNAME=$1
 export BASEDIR=`pwd`
@@ -54,6 +54,8 @@ RANDOMSEED=`echo $RANDOMSEED | rev | cut -c 3- | rev`
 #namebase="EtaTo2Mu2E_$RANDOMSEED"
 namebase="EtaTo2Mu2E_2022Test"
 
+echo "Copying pluto events file."
+xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events.csv GeneratorInterface/Pythia8Interface/test/
 
 echo "1.) Generating GEN-SIM for EtaTo2Mu2E from pluto events"
 

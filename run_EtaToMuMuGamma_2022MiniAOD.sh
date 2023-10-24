@@ -58,15 +58,21 @@ innum=$2
 #relaunching error files!!!!
 #errfiles=(170 171 206 240 249 257 307 322 350 378 383)
 #errfiles=( 105 134 184 233 264 281 329 377 426 459 476 506 524 556 57 603 621 651 669 7 )
-errfiles=( 106 129 168 253 327 362 379 467 681 683 )
-#jobnum=$innum
-jobnum=${errfiles[innum]}
+#errfiles=( 106 129 168 253 327 362 379 467 681 683 )
+#errfiles=( 974  1019 1060 1122 1132 1187 1199 1217 1230 1261 1263 1315 1437 1455 1508 1514 1518 1533 1574 1639 1645 1727 1744 1773 1892 1936 1969 2002 2005 2139 2187 2198 2203 2276 2354 2356 2396 2398 2409 2419 2435 2445 2451 2472 2494 2561 2572 2595 2631 2661 2667 2671 2743 2781 2828 2841 2989 3000 3050 3052 3083 3089 3095 3106 3110 3154 3164 3176 3199 3201 3205 3224 3229 3248 3273 3296 3332 3354 3355 3364 3442 3462 3492 )
+#errfiles=( 2005 2435 3176 3248 )
+jobnum=$innum
+#jobnum=${errfiles[innum]}
 innum=$jobnum
 #fnum=$(( innum + 1 ))
 
 #randomseed=$(( innum * 123 + 5 ))
-#second batch, use higher random seed
-randomseed=$(( innum * 123 + 89005 ))
+##second batch, use higher random seed
+#randomseed=$(( innum * 123 + 89005 ))
+##third batch, use even higher random seed
+#randomseed=$(( innum * 12345 + 987654 ))
+#fourth batch, use even even higher random seed!!
+randomseed=$(( innum * 54321 + 1234567890 ))
 echo "randomseed: $randomseed"
 
 echo "1.) Generating GEN-SIM `date`"
@@ -156,7 +162,9 @@ cmsRun -p ${namebase}_MINIAOD_cfg.py
 #xrdcp -f ${namebase}_AOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/AOD_Signal_Samples/
 #xrdcp ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD/${namebase}_MINIAOD_${jobnum}.root
 #second batch--use new directory
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_3/${namebase}_MINIAOD_${jobnum}.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/lpcdisptau/eta2mu2e/EtaToMuMuGamma/Run3_2022_MINIAOD_4/${namebase}_MINIAOD_${jobnum}.root
 #xrdcp -f ${namebase}_NANOAOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/NANOAOD_Signal_Samples/${namebase}_NANOAOD_${jobnum}.root
 
 echo "Done!"
