@@ -12,4 +12,6 @@ Arguments = $ENV(USER) $(Process)
 #Queue 4
 #Queue 3500
 #Queue 10500
-Queue 2000
+#Queue 2000
+#Queue 500
+Queue 1 

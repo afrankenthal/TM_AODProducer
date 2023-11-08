@@ -19,9 +19,9 @@ echo "Starting script for user: $USERNAME ..."
 #echo "Will save generated AODs at: /store/user/$USERNAME/EtaTo2Mu2E/AOD_Signal_Samples/"
 
 #2000 events for real run!
-nevent=2000
+#nevent=2000
 #20 events just for test!
-#nevent=20
+nevent=20
 #release0='CMSSW_12_0_2'
 release0='CMSSW_12_4_11_patch3'
 
@@ -77,7 +77,8 @@ echo "randomseed: $randomseed"
 
 echo "1.) Generating GEN-SIM `date`"
 ls
-cmsDriver.py Configuration/Generator/Py8Eta2MuGammaPtGun_cfi.py --fileout file:${namebase}_GENSIM.root  --mc --eventcontent RAWSIM --datatier GEN-SIM --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --nThreads 1 --customise Configuration/DataProcessing/Utils.addMonitoring  --python_filename ${namebase}_GS_cfg.py --no_exec -n $nevent
+#cmsDriver.py Configuration/Generator/Py8Eta2MuGammaPtGun_cfi.py --fileout file:${namebase}_GENSIM.root  --mc --eventcontent RAWSIM --datatier GEN-SIM --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --nThreads 1 --customise Configuration/DataProcessing/Utils.addMonitoring  --python_filename ${namebase}_GS_cfg.py --no_exec -n $nevent
+cmsDriver.py Configuration/Generator/Py8Eta2MuGammaPtExpGun_cfi.py --fileout file:${namebase}_GENSIM.root  --mc --eventcontent RAWSIM --datatier GEN-SIM --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --nThreads 1 --customise Configuration/DataProcessing/Utils.addMonitoring  --python_filename ${namebase}_GS_cfg.py --no_exec -n $nevent
 
 echo "process.RandomNumberGeneratorService.generator.initialSeed = cms.untracked.uint32(${randomseed})" >> ${namebase}_GS_cfg.py
 
@@ -164,7 +165,8 @@ cmsRun -p ${namebase}_MINIAOD_cfg.py
 #second batch--use new directory
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_3/${namebase}_MINIAOD_${jobnum}.root
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/lpcdisptau/eta2mu2e/EtaToMuMuGamma/Run3_2022_MINIAOD_4/${namebase}_MINIAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/lpcdisptau/eta2mu2e/EtaToMuMuGamma/Run3_2022_MINIAOD_5/${namebase}_MINIAOD_${jobnum}.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/bgreenbe/EtaToMuMuGamma/${namebase}_MINIAODTEST_${jobnum}.root
 #xrdcp -f ${namebase}_NANOAOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/NANOAOD_Signal_Samples/${namebase}_NANOAOD_${jobnum}.root
 
 echo "Done!"
