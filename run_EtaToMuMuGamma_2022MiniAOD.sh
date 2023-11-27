@@ -19,9 +19,9 @@ echo "Starting script for user: $USERNAME ..."
 #echo "Will save generated AODs at: /store/user/$USERNAME/EtaTo2Mu2E/AOD_Signal_Samples/"
 
 #2000 events for real run!
-#nevent=2000
-#20 events just for test!
-nevent=20
+nevent=2000
+##20 events just for test!
+#nevent=20
 #release0='CMSSW_12_0_2'
 release0='CMSSW_12_4_11_patch3'
 
@@ -71,8 +71,14 @@ innum=$jobnum
 #randomseed=$(( innum * 123 + 89005 ))
 ##third batch, use even higher random seed
 #randomseed=$(( innum * 12345 + 987654 ))
-#fourth batch, use even even higher random seed!!
-randomseed=$(( innum * 54321 + 1234567890 ))
+##fourth batch, use even even higher random seed!!
+#randomseed=$(( innum * 54321 + 1234567890 ))
+##fifth batch, use slightly lower random seed!!
+#randomseed=$(( innum * 34251 + 876543210 ))
+##fifth batch, use slightly lower random seed!!
+#randomseed=$(( innum * 34253 + 543210876 ))
+#sixth batch, use slightly higher random seed!!
+randomseed=$(( innum * 1425578 + 230876654 ))
 echo "randomseed: $randomseed"
 
 echo "1.) Generating GEN-SIM `date`"
@@ -165,8 +171,9 @@ cmsRun -p ${namebase}_MINIAOD_cfg.py
 #second batch--use new directory
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD_3/${namebase}_MINIAOD_${jobnum}.root
-#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/lpcdisptau/eta2mu2e/EtaToMuMuGamma/Run3_2022_MINIAOD_5/${namebase}_MINIAOD_${jobnum}.root
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/bgreenbe/EtaToMuMuGamma/${namebase}_MINIAODTEST_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/lpcdisptau/eta2mu2e/EtaToMuMuGamma/Run3_2022_MINIAOD_7/${namebase}_MINIAOD_${jobnum}.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/lpcdisptau/eta2mu2e/EtaToMuMuGamma/Run3_2022_MINIAOD_Exp2/${namebase}_MINIAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/bgreenbe/EtaToMuMuGamma/${namebase}_MINIAODTEST_${jobnum}.root
 #xrdcp -f ${namebase}_NANOAOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/NANOAOD_Signal_Samples/${namebase}_NANOAOD_${jobnum}.root
 
 echo "Done!"

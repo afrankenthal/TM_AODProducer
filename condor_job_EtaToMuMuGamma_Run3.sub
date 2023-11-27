@@ -3,6 +3,7 @@ Executable = run_EtaToMuMuGamma_2022MiniAOD.sh
 should_transfer_files = YES
 transfer_input_files = EtaToMuMuGamma_2022Test_DIGIRAWHLT_cfg.py
 request_memory = 4000
++JobFlavour = "tomorrow"
 Output = jobfiles/EtaMuMuGamma$(Cluster)_$(Process).out
 Error = jobfiles/EtaMuMuGamma$(Cluster)_$(Process).err
 Log = jobfiles/EtaMuMuGamma$(Cluster)_$(Process).log
@@ -13,5 +14,5 @@ Arguments = $ENV(USER) $(Process)
 #Queue 3500
 #Queue 10500
 #Queue 2000
-#Queue 500
-Queue 1 
+Queue 1000
+#Queue 1 
