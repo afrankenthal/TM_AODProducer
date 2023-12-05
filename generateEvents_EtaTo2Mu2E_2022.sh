@@ -12,10 +12,10 @@
 #    return # if local 
 #}
 
-#1000 for real thing
-nevent=2000
-##20 for test!
-#nevent=20
+##2000 for real thing
+#nevent=2000
+#20 for test!
+nevent=20
 USERNAME=$1
 export BASEDIR=`pwd`
 release="CMSSW_12_4_11_patch3"
@@ -55,7 +55,8 @@ RANDOMSEED=`echo $RANDOMSEED | rev | cut -c 3- | rev`
 namebase="EtaTo2Mu2E_2022Test"
 
 echo "Copying pluto events file."
-xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events.csv GeneratorInterface/Pythia8Interface/test/
+#xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events.csv GeneratorInterface/Pythia8Interface/test/
+xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events_2ndRound.csv GeneratorInterface/Pythia8Interface/test/pluto_EtaTo2Mu2E_1M_events.csv
 
 echo "1.) Generating GEN-SIM for EtaTo2Mu2E from pluto events"
 
@@ -124,6 +125,7 @@ eval $cmd
 #xrdcp ${namebase}_scoutingPF_2021.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/AOD_Signal_Samples/
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD/${namebase}_${2}_MINIAOD_2022.root
 #sending new files to new directory
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_2/${namebase}_${2}_MINIAOD_2022.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_2/${namebase}_${2}_MINIAOD_2022.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${2}_MINIAOD_2022.root
 
 echo "Done!"
