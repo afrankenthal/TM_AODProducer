@@ -8,10 +8,12 @@ should_transfer_files = YES
 #transfer_input_files = EtaTo2Mu2E_DIGIRAWHLT_template_2021_cfg.py
 transfer_input_files = EtaTo2Mu2E_2022Test_DIGIRAWHLT_cfg.py
 request_memory = 4000
-Output = $(Cluster)_$(Process).out
-Error = $(Cluster)_$(Process).err
-Log = $(Cluster)_$(Process).log
++JobFlavour = "tomorrow"
+Output = jobfiles/Eta2Mu2E$(Cluster)_$(Process).out
+Error = jobfiles/Eta2Mu2E$(Cluster)_$(Process).err
+Log = jobfiles/Eta2Mu2E$(Cluster)_$(Process).log
 Arguments = $ENV(USER) $(Process)
 #Queue 65
-Queue 300
+#Queue 325
 #Queue 1
+Queue 6

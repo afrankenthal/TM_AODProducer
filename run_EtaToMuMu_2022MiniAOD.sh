@@ -155,8 +155,9 @@ cmsRun -p ${namebase}_MINIAOD_cfg.py
 ## if not, change below line to actual EOS space name
 #xrdcp -f ${namebase}_AOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/AOD_Signal_Samples/
 #xrdcp ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD/${namebase}_MINIAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD/${namebase}_MINIAOD_${jobnum}.root
 #second batch--use new directory
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD/${namebase}_MINIAOD_${jobnum}.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
 #xrdcp -f ${namebase}_NANOAOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/NANOAOD_Signal_Samples/${namebase}_NANOAOD_${jobnum}.root
 
 echo "Done!"

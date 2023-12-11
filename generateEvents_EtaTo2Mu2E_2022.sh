@@ -12,10 +12,10 @@
 #    return # if local 
 #}
 
-##2000 for real thing
-#nevent=2000
-#20 for test!
-nevent=20
+#2000 for real thing
+nevent=2000
+##20 for test!
+#nevent=20
 USERNAME=$1
 export BASEDIR=`pwd`
 release="CMSSW_12_4_11_patch3"
@@ -120,12 +120,19 @@ cmd="ls -arlth *.root"
 echo $cmd
 eval $cmd
 
+#for first submission, file arg is just the job number
+arg=$2
+#if resubmitting error files, arg is the missing ones
+errfiles=( 12 162 169 22 257 273 )
+arg=${errfiles[arg]}
+
 # this assumes your EOS space on the LPC has the same name as your local username (or your DN is mapped to it)
 # if not, change below line to actual EOS space name
 #xrdcp ${namebase}_scoutingPF_2021.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/AOD_Signal_Samples/
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD/${namebase}_${2}_MINIAOD_2022.root
 #sending new files to new directory
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_2/${namebase}_${2}_MINIAOD_2022.root
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${2}_MINIAOD_2022.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${2}_MINIAOD_2022.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${arg}_MINIAOD_2022.root
 
 echo "Done!"
