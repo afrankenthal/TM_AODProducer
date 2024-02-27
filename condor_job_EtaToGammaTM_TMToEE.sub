@@ -4,8 +4,8 @@ should_transfer_files = YES
 transfer_input_files = EtaToGammaTM_TMToEE_2022_DIGIRAWHLT_cfg.py
 request_memory = 4000
 +JobFlavour = "tomorrow"
-Output = jobfiles/EtaToGammaTM_TMToEE$(Cluster)_$(Process).out
-Error = jobfiles/EtaToGammaTM_TMToEE$(Cluster)_$(Process).err
-Log = jobfiles/EtaToGammaTM_TMToEE$(Cluster)_$(Process).log
+Output = jobfiles/EtaToGammaTM_TMToEE_$(Cluster)_$(Process).out
+Error = jobfiles/EtaToGammaTM_TMToEE_$(Cluster)_$(Process).err
+Log = jobfiles/EtaToGammaTM_TMToEE_$(Cluster)_$(Process).log
 Arguments = $ENV(USER) $(Process)
 Queue 1

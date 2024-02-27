@@ -16,14 +16,14 @@ USERNAME=$1
 RELEASE="CMSSW_12_4_11_patch3"
 export BASEDIR=`pwd`
 SAMPLE="EtaToGammaTM_TMToEE"
-BASENAME="$SAMPLE_2022"
-GENSIM_cfg="$BASENAME_GENSIM_cfg.py"
-DIGIRAW_cfg="$BASENAME_DIGIRAWHLT_cfg.py"
-AOD_cfg="$BASENAME_AOD_cfg.py"
-MINIAOD_cfg="$BASENAME_MINIAOD_cfg.py"
+BASENAME="${SAMPLE}_2022"
+GENSIM_cfg="${BASENAME}_GENSIM_cfg.py"
+DR_cfg="${BASENAME}_DIGIRAWHLT_cfg.py"
+AOD_cfg="${BASENAME}_AOD_cfg.py"
+MINIAOD_cfg="${BASENAME}_MINIAOD_cfg.py"
 
 echo "Starting script for user: $USERNAME ..."
-echo "Will save generated AODs at: /store/user/$USERNAME/$SAMPLE/MINIAOD_Signal_Samples/"
+echo "Will save generated AODs at: /store/user/$USERNAME/$BASENAME/MINIAOD_Signal_Samples/"
 
 
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
@@ -57,9 +57,9 @@ RANDOMSEED=`echo $RANDOMSEED | rev | cut -c 3- | rev`
 
 echo "Copying pluto events file."
 #xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events.csv GeneratorInterface/Pythia8Interface/test/
-xrdcp root://cmseos.fnal.gov//store/user/asterenb/EtaToGammaTM_TMToEE_550ketas.csv GeneratorInterface/Pythia8Interface/test/EtaToGammaTM_TMToEE_550ketas.csv
+xrdcp root://cmseos.fnal.gov//store/user/asterenb/EtaToGammaTM_TMToEE_550ketas.csv GeneratorInterface/Pythia8Interface/test/EtaToGammaTM_TMToEE_550Ketas.csv
 
-echo "1.) Generating GEN-SIM for $SAMPLE from pluto events"
+echo "1.) Generating GEN-SIM for $SAMPLE from CSV events"
 
 #cmsDriver.py Configuration/Generator/python/PlutoReader_EtaTo2Mu2E_pythia8_cfi.py --python_filename $GENSIM_cfg --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:${BASENAME}_GENSIM.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --customise_commands "process.g4SimHits.Physics.G4GeneralProcess = cms.bool(False)" --step GEN,SIM --geometry DB:Extended --era Run3 --no_exec --mc -n ${nevent} || exit:$?;
 cmsDriver.py Configuration/Generator/python/CSVReader_pythia8_cfi.py --python_filename $GENSIM_cfg --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:${BASENAME}_GENSIM.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --no_exec --mc -n ${nevent} || exit:$?;
@@ -136,6 +136,6 @@ arg=$2
 #sending new files to new directory
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_2/${namebase}_${2}_MINIAOD_2022.root
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${2}_MINIAOD_2022.root
-xrdcp -f ${BASENAME}_MINIAOD.root root://cmseos.fnal.gov//store/user/$USERNAME/$SAMPLE/Run3_2022_MINIAOD_3/${BASENAME}_MINIAOD_${arg}.root
+xrdcp -f ${BASENAME}_MINIAOD.root root://cmseos.fnal.gov//store/user/$USERNAME/$BASENAME/${BASENAME}_MINIAOD_${arg}.root
 
 echo "Done!"
