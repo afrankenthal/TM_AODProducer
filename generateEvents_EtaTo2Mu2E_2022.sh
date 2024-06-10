@@ -13,14 +13,16 @@
 #}
 
 #2000 for real thing
-nevent=2000
+nevent=1000
 ##20 for test!
-#nevent=20
+#nevent=40
 USERNAME=$1
 export BASEDIR=`pwd`
 release="CMSSW_12_4_11_patch3"
 GENSIM_cfg="EtaTo2Mu2E_GENSIM_2022_cfg.py"
-DR_cfg="EtaTo2Mu2E_2022Test_DIGIRAWHLT_cfg.py"
+#DR_cfg="EtaTo2Mu2E_2022Test_DIGIRAWHLT_cfg.py"
+#for the preEE instead of postEE
+DR_cfg="EtaTo2Mu2E_2022preEETest_DIGIRAWHLT_cfg.py"
 
 echo "Starting script for user: $USERNAME ..."
 echo "Will save generated AODs at: /store/user/$USERNAME/EtaTo2Mu2E/AOD_Signal_Samples/"
@@ -56,12 +58,14 @@ namebase="EtaTo2Mu2E_2022Test"
 
 echo "Copying pluto events file."
 #xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events.csv GeneratorInterface/Pythia8Interface/test/
-xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events_2ndRound.csv GeneratorInterface/Pythia8Interface/test/pluto_EtaTo2Mu2E_1M_events.csv
+#xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events_2ndRound.csv GeneratorInterface/Pythia8Interface/test/pluto_EtaTo2Mu2E_1M_events.csv
+xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/pluto_EtaTo2Mu2E_1M_events_3rdRound.csv GeneratorInterface/Pythia8Interface/test/pluto_EtaTo2Mu2E_1M_events.csv
 
 echo "1.) Generating GEN-SIM for EtaTo2Mu2E from pluto events"
 
 #cmsDriver.py Configuration/Generator/python/PlutoReader_EtaTo2Mu2E_pythia8_cfi.py --python_filename $GENSIM_cfg --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:${namebase}_GENSIM.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --customise_commands "process.g4SimHits.Physics.G4GeneralProcess = cms.bool(False)" --step GEN,SIM --geometry DB:Extended --era Run3 --no_exec --mc -n ${nevent} || exit:$?;
-cmsDriver.py Configuration/Generator/python/PlutoReader_EtaTo2Mu2E_pythia8_cfi.py --python_filename $GENSIM_cfg --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:${namebase}_GENSIM.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --no_exec --mc -n ${nevent} || exit:$?;
+#cmsDriver.py Configuration/Generator/python/PlutoReader_EtaTo2Mu2E_pythia8_cfi.py --python_filename $GENSIM_cfg --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:${namebase}_GENSIM.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --no_exec --mc -n ${nevent} || exit:$?;
+cmsDriver.py Configuration/Generator/python/PlutoReader_EtaTo2Mu2E_pythia8_cfi.py --python_filename $GENSIM_cfg --eventcontent RAWSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM --fileout file:${namebase}_GENSIM.root --conditions 124X_mcRun3_2022_realistic_v12 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --no_exec --mc -n ${nevent} || exit:$?;
 
 # Make each file unique to make later publication possible
 # (by making lumi section equal to the random seed)
@@ -95,22 +99,36 @@ cmsRun -p $DR_cfg #EtaTo2Mu2E_DIGIRAWHLT_cfg.py
 # Then run HLT by hand to incorporate scouting collections
 echo "3.) Running HLT for EtaTo2Mu2E"
 
+#cmsDriver.py step2 \
+#    --filein file:${namebase}_DIGIRAWHLT.root \
+#    --fileout file:${namebase}_AOD_2022.root \
+#    --mc --eventcontent AODSIM --datatier AODSIM --runUnscheduled \
+#    --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
+#    --nThreads 1 --era Run3 --python_filename EtaToMuMuGamma_AOD_cfg.py --no_exec \
+#    --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 cmsDriver.py step2 \
     --filein file:${namebase}_DIGIRAWHLT.root \
     --fileout file:${namebase}_AOD_2022.root \
     --mc --eventcontent AODSIM --datatier AODSIM --runUnscheduled \
-    --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
+    --conditions 124X_mcRun3_2022_realistic_v12 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
     --nThreads 1 --era Run3 --python_filename EtaToMuMuGamma_AOD_cfg.py --no_exec \
     --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 
 cmsRun -p EtaToMuMuGamma_AOD_cfg.py
 
 echo "4.) Generating MINIAOD"
+#cmsDriver.py step3 \
+#       --filein file:${namebase}_AOD_2022.root \
+#       --fileout file:${namebase}_MINIAOD_2022.root \
+#       --mc --eventcontent MINIAODSIM --datatier MINIAODSIM --runUnscheduled \
+#       --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step PAT \
+#       --nThreads 1 --era Run3 --python_filename ${namebase}_MINIAOD_cfg.py --no_exec \
+#       --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 cmsDriver.py step3 \
        --filein file:${namebase}_AOD_2022.root \
        --fileout file:${namebase}_MINIAOD_2022.root \
        --mc --eventcontent MINIAODSIM --datatier MINIAODSIM --runUnscheduled \
-       --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step PAT \
+       --conditions 124X_mcRun3_2022_realistic_v12 --step PAT \
        --nThreads 1 --era Run3 --python_filename ${namebase}_MINIAOD_cfg.py --no_exec \
        --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 cmsRun -p ${namebase}_MINIAOD_cfg.py
@@ -122,9 +140,9 @@ eval $cmd
 
 #for first submission, file arg is just the job number
 arg=$2
-#if resubmitting error files, arg is the missing ones
-errfiles=( 12 162 169 22 257 273 )
-arg=${errfiles[arg]}
+##if resubmitting error files, arg is the missing ones
+#errfiles=( 12 162 169 22 257 273 )
+#arg=${errfiles[arg]}
 
 # this assumes your EOS space on the LPC has the same name as your local username (or your DN is mapped to it)
 # if not, change below line to actual EOS space name
@@ -133,6 +151,14 @@ arg=${errfiles[arg]}
 #sending new files to new directory
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_2/${namebase}_${2}_MINIAOD_2022.root
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${2}_MINIAOD_2022.root
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${arg}_MINIAOD_2022.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_3/${namebase}_${arg}_MINIAOD_2022.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_4/${namebase}_${arg}_MINIAOD_2022.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_preEE/${namebase}_${arg}_MINIAOD_2022.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_preEE2/${namebase}_${arg}_MINIAOD_2022.root
+##just for test, also copying other files, to see what they be lookin like.
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_test4/${namebase}_${arg}_MINIAOD_2022.root
+#xrdcp -f ${namebase}_GENSIM.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_test4/${namebase}_${arg}_GENSIM_2022.root
+#xrdcp -f ${namebase}_DIGIRAWHLT.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_test4/${namebase}_${arg}_DIGIRAWHLT_2022.root
+#xrdcp -f ${namebase}_AOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaTo2Mu2E/Run3_2022_MINIAOD_test4/${namebase}_${arg}_AOD_2022.root
 
 echo "Done!"

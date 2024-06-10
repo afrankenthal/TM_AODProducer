@@ -12,6 +12,11 @@
 #    return # if local 
 #}
 
+echo "Trying to start cmssw-el7...."
+#now that there's no more SL7, try using this to make the code still work...
+cmssw-el7 -- /bin/bash -l
+echo "started."
+
 USERNAME=$1
 export BASEDIR=`pwd`
 
@@ -19,9 +24,10 @@ echo "Starting script for user: $USERNAME ..."
 #echo "Will save generated AODs at: /store/user/$USERNAME/EtaTo2Mu2E/AOD_Signal_Samples/"
 
 #2000 events for real run!
-nevent=2000
+#nevent=2000
+#nevent=1000
 ##20 events just for test!
-#nevent=20
+nevent=20
 #release0='CMSSW_12_0_2'
 release0='CMSSW_12_4_11_patch3'
 
@@ -47,9 +53,9 @@ scram b -j 4 || exit $?;
 ls -lrth
 
 
-#RANDOMSEED=`od -vAn -N4 -tu4 < /dev/urandom`
+RANDOMSEED=`od -vAn -N4 -tu4 < /dev/urandom`
 #Sometimes the RANDOMSEED is too long for madgraph
-#RANDOMSEED=`echo $RANDOMSEED | rev | cut -c 3- | rev`
+RANDOMSEED=`echo $RANDOMSEED | rev | cut -c 3- | rev`
 
 #jobnum=$2
 
@@ -66,12 +72,14 @@ innum=$jobnum
 
 #randomseed=$(( innum * 123 + 5 ))
 #second batch, use higher random seed
-randomseed=$(( innum * 123 + 67890 ))
+#randomseed=$(( innum * 123 + 67890 ))
+randomseed=$RANDOMSEED
 echo "randomseed: $randomseed"
 
 echo "1.) Generating GEN-SIM `date`"
 ls
-cmsDriver.py Configuration/Generator/Py8Eta2MuPtGun_cfi.py --fileout file:${namebase}_GENSIM.root  --mc --eventcontent RAWSIM --datatier GEN-SIM --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --nThreads 1 --customise Configuration/DataProcessing/Utils.addMonitoring  --python_filename ${namebase}_GS_cfg.py --no_exec -n $nevent
+#cmsDriver.py Configuration/Generator/Py8Eta2MuPtGun_cfi.py --fileout file:${namebase}_GENSIM.root  --mc --eventcontent RAWSIM --datatier GEN-SIM --conditions 124X_mcRun3_2022_realistic_postEE_v1 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --nThreads 1 --customise Configuration/DataProcessing/Utils.addMonitoring  --python_filename ${namebase}_GS_cfg.py --no_exec -n $nevent
+cmsDriver.py Configuration/Generator/Py8Eta2MuPtGun_cfi.py --fileout file:${namebase}_GENSIM.root  --mc --eventcontent RAWSIM --datatier GEN-SIM --conditions 124X_mcRun3_2022_realistic_v12 --beamspot Realistic25ns13p6TeVEarly2022Collision --step GEN,SIM --geometry DB:Extended --era Run3 --nThreads 1 --customise Configuration/DataProcessing/Utils.addMonitoring  --python_filename ${namebase}_GS_cfg.py --no_exec -n $nevent
 
 echo "process.RandomNumberGeneratorService.generator.initialSeed = cms.untracked.uint32(${randomseed})" >> ${namebase}_GS_cfg.py
 
@@ -114,11 +122,18 @@ echo "3.) Generating AOD for EtaToMuMu"
 #xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/EtaToMuMuGamma/CRAB_PrivateMC/crab_test100k_12/221216_151006/0000/${namebase}_GSDR_${fnum}.root inFile.root
 #xrdcp root://cmseos.fnal.gov//store/user/bgreenbe/EtaToMuMuGamma/CRAB_PrivateMC/crab_test10M_0/221219_165628/0000/${namebase}_GSDR_${fnum}.root inFile.root
 
+#cmsDriver.py step2 \
+#    --filein file:${namebase}_DIGIRAWHLT.root \
+#    --fileout file:${namebase}_AOD_2022.root \
+#    --mc --eventcontent AODSIM --datatier AODSIM --runUnscheduled \
+#    --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
+#    --nThreads 1 --era Run3 --python_filename EtaToMuMu_AOD_cfg.py --no_exec \
+#    --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 cmsDriver.py step2 \
     --filein file:${namebase}_DIGIRAWHLT.root \
     --fileout file:${namebase}_AOD_2022.root \
     --mc --eventcontent AODSIM --datatier AODSIM --runUnscheduled \
-    --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
+    --conditions 124X_mcRun3_2022_realistic_v12 --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
     --nThreads 1 --era Run3 --python_filename EtaToMuMu_AOD_cfg.py --no_exec \
     --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 
@@ -126,11 +141,18 @@ cmsRun -p EtaToMuMu_AOD_cfg.py
 
 ## MINIAOD production is commented out
 echo "4.) Generating MINIAOD"
+#cmsDriver.py step3 \
+#       --filein file:${namebase}_AOD_2022.root \
+#       --fileout file:${namebase}_MINIAOD_2022.root \
+#       --mc --eventcontent MINIAODSIM --datatier MINIAODSIM --runUnscheduled \
+#       --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step PAT \
+#       --nThreads 1 --era Run3 --python_filename ${namebase}_MINIAOD_cfg.py --no_exec \
+#       --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 cmsDriver.py step3 \
        --filein file:${namebase}_AOD_2022.root \
        --fileout file:${namebase}_MINIAOD_2022.root \
        --mc --eventcontent MINIAODSIM --datatier MINIAODSIM --runUnscheduled \
-       --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step PAT \
+       --conditions 124X_mcRun3_2022_realistic_v12 --step PAT \
        --nThreads 1 --era Run3 --python_filename ${namebase}_MINIAOD_cfg.py --no_exec \
        --customise Configuration/DataProcessing/Utils.addMonitoring -n ${nevent} || exit $?;
 cmsRun -p ${namebase}_MINIAOD_cfg.py
@@ -157,7 +179,9 @@ cmsRun -p ${namebase}_MINIAOD_cfg.py
 #xrdcp ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/Run3_2022_MINIAOD/${namebase}_MINIAOD_${jobnum}.root
 #xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD/${namebase}_MINIAOD_${jobnum}.root
 #second batch--use new directory
-xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
-#xrdcp -f ${namebase}_NANOAOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/NANOAOD_Signal_Samples/${namebase}_NANOAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD_2/${namebase}_MINIAOD_${jobnum}.root
+#xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD_preEE/${namebase}_MINIAOD_${jobnum}.root
+xrdcp -f ${namebase}_MINIAOD_2022.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMu/Run3_2022_MINIAOD_preEE2/${namebase}_MINIAOD_${jobnum}.root
+##xrdcp -f ${namebase}_NANOAOD_2018.root root://cmseos.fnal.gov//store/user/$USERNAME/EtaToMuMuGamma/NANOAOD_Signal_Samples/${namebase}_NANOAOD_${jobnum}.root
 
 echo "Done!"
